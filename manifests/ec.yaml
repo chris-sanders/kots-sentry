@@ -1,15 +1,11 @@
 apiVersion: embeddedcluster.replicated.com/v1beta1
 kind: Config
 spec:
-  version: 1.28.2+ec.2
   unsupportedOverrides:
     k0s: |
       spec:
-        api:
-          extraArgs:
-            service-node-port-range: 80-32767
         workerProfiles:
         - name: ip-forward
           values:
             allowedUnsafeSysctls:
-            - net.ipv4.ip_forward
+              - net.ipv4.ip_forward
