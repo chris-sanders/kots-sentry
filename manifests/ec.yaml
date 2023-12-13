@@ -4,8 +4,7 @@ spec:
   version: 1.28.2+ec.2
   unsupportedOverrides:
     k0s: |-
-      config:
-        spec:
-          api:
-            extraArgs:
-              service-node-port-range: 80-32767
+      spec:
+        api:
+          extraArgs:
+            service-node-port-range: 80-32767
