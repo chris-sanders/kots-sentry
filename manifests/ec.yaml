@@ -6,8 +6,6 @@ spec:
     k0s: |
       config:
         spec:
-          workerProfiles:
-          - name: ip-forward
-            values:
-              allowedUnsafeSysctls:
-                - net.ipv4.ip_forward
+          api:
+            extraArgs:
+              service-node-port-range: 80-32767
