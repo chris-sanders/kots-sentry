@@ -6,6 +6,103 @@ spec:
     k0s: |
       config:
         spec:
-          api:
-            extraArgs:
-              service-node-port-range: 80-32767
+          extensions:
+            helm:
+              charts:
+              - chartname: openebs/openebs
+                name: openebs
+                namespace: openebs
+                order: 1
+                timeout: 0
+                values: |
+                  localprovisioner:
+                    hostpathClass:
+                      isDefaultClass: true
+                  ndm:
+                    enabled: false
+                  ndmOperator:
+                    enabled: false
+                version: 3.9.0
+              - chartname: oci://registry.replicated.com/library/embedded-cluster-operator
+                name: embedded-cluster-operator
+                namespace: embedded-cluster
+                order: 2
+                timeout: 0
+                values: |
+                  embeddedBinaryName: chriss-test-app-monster
+                  embeddedClusterID: ceb8bc99-70cd-4539-a3f8-28398c1f2c7a
+                  embeddedClusterK0sVersion: v1.28.4+k0s.0-ec.0
+                  embeddedClusterVersion: v1.28.4+ec.5
+                  kotsVersion: 1.104.7-build.1
+                version: 0.7.1
+              - chartname: oci://registry.replicated.com/library/admin-console
+                name: admin-console
+                namespace: embedded-cluster
+                order: 3
+                timeout: 0
+                values: |
+                  automation:
+                      license:
+                          data: |
+                              apiVersion: kots.io/v1beta1
+                              kind: License
+                              metadata:
+                                creationTimestamp: null
+                                name: ec-testing
+                              spec:
+                                appSlug: chriss-test-app-monster
+                                channelID: 2ZUrycDVCyHnK1d8XQfEL5iQBtq
+                                channelName: ec-testing
+                                customerName: ec-testing
+                                endpoint: https://replicated.app
+                                entitlements:
+                                  expires_at:
+                                    description: License Expiration
+                                    title: Expiration
+                                    value: ""
+                                    valueType: String
+                                isAirgapSupported: true
+                                isSnapshotSupported: true
+                                isSupportBundleUploadSupported: true
+                                licenseID: 2ZUs57LOWrtu8FWK4GFh7yy3KMa
+                                licenseSequence: 3
+                                licenseType: trial
+                                signature: eyJsaWNlbnNlRGF0YSI6ImV5SmhjR2xXWlhKemFXOXVJam9pYTI5MGN5NXBieTkyTVdKbGRHRXhJaXdpYTJsdVpDSTZJa3hwWTJWdWMyVWlMQ0p0WlhSaFpHRjBZU0k2ZXlKdVlXMWxJam9pWldNdGRHVnpkR2x1WnlKOUxDSnpjR1ZqSWpwN0lteHBZMlZ1YzJWSlJDSTZJakphVlhNMU4weFBWM0owZFRoR1YwczBSMFpvTjNsNU0wdE5ZU0lzSW14cFkyVnVjMlZVZVhCbElqb2lkSEpwWVd3aUxDSmpkWE4wYjIxbGNrNWhiV1VpT2lKbFl5MTBaWE4wYVc1bklpd2lZWEJ3VTJ4MVp5STZJbU5vY21semN5MTBaWE4wTFdGd2NDMXRiMjV6ZEdWeUlpd2lZMmhoYm01bGJFbEVJam9pTWxwVmNubGpSRlpEZVVodVN6RmtPRmhSWmtWTU5XbFJRblJ4SWl3aVkyaGhibTVsYkU1aGJXVWlPaUpsWXkxMFpYTjBhVzVuSWl3aWJHbGpaVzV6WlZObGNYVmxibU5sSWpvekxDSmxibVJ3YjJsdWRDSTZJbWgwZEhCek9pOHZjbVZ3YkdsallYUmxaQzVoY0hBaUxDSmxiblJwZEd4bGJXVnVkSE1pT25zaVpYaHdhWEpsYzE5aGRDSTZleUowYVhSc1pTSTZJa1Y0Y0dseVlYUnBiMjRpTENKa1pYTmpjbWx3ZEdsdmJpSTZJa3hwWTJWdWMyVWdSWGh3YVhKaGRHbHZiaUlzSW5aaGJIVmxJam9pSWl3aWRtRnNkV1ZVZVhCbElqb2lVM1J5YVc1bklpd2ljMmxuYm1GMGRYSmxJanA3ZlgxOUxDSnBjMEZwY21kaGNGTjFjSEJ2Y25SbFpDSTZkSEoxWlN3aWFYTlRibUZ3YzJodmRGTjFjSEJ2Y25SbFpDSTZkSEoxWlN3aWFYTk9aWGRMYjNSelZXbEZibUZpYkdWa0lqcDBjblZsTENKcGMxTjFjSEJ2Y25SQ2RXNWtiR1ZWY0d4dllXUlRkWEJ3YjNKMFpXUWlPblJ5ZFdVc0ltbHpSVzFpWldSa1pXUkRiSFZ6ZEdWeVJHOTNibXh2WVdSRmJtRmliR1ZrSWpwMGNuVmxMQ0pwYzB0dmRITkpibk4wWVd4c1JXNWhZbXhsWkNJNmRISjFaWDE5IiwiaW5uZXJTaWduYXR1cmUiOiJleUpzYVdObGJuTmxVMmxuYm1GMGRYSmxJam9pUWpsb2FWQlhNRWcxUkZWVk5HVXJkV1JLV0dJeldtRkZlbWQ0TDNOS1JrWnZaWFoxTTFCeFlXeFBVbW96U2k4dlFsQk5hSGhJVWpZMVRIVlRZakZtZG5vMVYwTXdWMEpCUTBNMVdFNVNOME5VZFZoaU1VVlpNbUZoTjJrNVlXTnFXakJKU1dOTWRGcHVlRVl5VUdSR2JITlFkVFZtZVRKWFRrd3pZMFUwWWs5VGJEWXpXVW92UzNCd2VWQTBlblV4TDJGYU1uTk1VVFpxZEVOMGMxTXhiM0JtY2t4TU5UZ3lVekEzT0VoWVExaG9PRkJIUkV0VlFWSkROelV2ZDJvNGMwSmllWHBIT1hOWmFVNXZTRE16U2xSTWFrOXdhM3BqZFU0ck1FVXpTbHB6ZG1KWGR5dEdUa3htZVROYWRYTnZiVUpFWlV0V2JIQjNlQzlyYlVsc1RrSkxSbTV4WmtSNWEyNTRPV1l6TjBNNFFqTk5aekpNV0hKWVJXUktUbXgzVFRKMFpGWTFRakZFTm1GaVZ6TlpUVFpSV1doVk1VSmhZbTlYVWxkQmVFVnFVVzV6YURSMVJHMXBhV1I2UmtOcVNTc3lNVFpCUFQwaUxDSndkV0pzYVdOTFpYa2lPaUl0TFMwdExVSkZSMGxPSUZCVlFreEpReUJMUlZrdExTMHRMVnh1VFVsSlFrbHFRVTVDWjJ0eGFHdHBSemwzTUVKQlVVVkdRVUZQUTBGUk9FRk5TVWxDUTJkTFEwRlJSVUV3YUhWWlJIUnhiMFJLVmsxTVV6ZHhTRUppVlZ4dUswVkdObEJGYjJwaFprRlpRa0pvVVRoek5YSlVjMEpZVm10U1kzUnpXV3BVYlN0VWJXUm5aaXQwVVhOSWVUVlNWbVpKUVZsWVlYa3ZUR1JMWldseFlWeHViMjA1WWxkWGRuVXJNRWxPVFd4SU0wTlNSMmR6UjNKeGRURTFMMDFVUzI1a2Ewc3lWRmxIUkRSbEswc3pZbkZWUW14MlYxZEJZVEoyVGtoT1YyWllhVnh1YzNkaGMxaFFOMFJyYkdSVGRUVlhTVkEzVFdJekwwaEJNMVpyWjJwcU4ybEJVMVpwUW10MU55c3ZkbGhGZGs0MGJuSkNVblZsVG5OSlRXMXBUbEl4V0Z4dVpWVm5iSEJ4Y2paSFMxY3JUWEJXTHpsblQyZElOVXBxYjJKbk5ESTRSak4yYkU1cVJYVkpjVEJOVjA1bGIzVnJOa1ZsV0djdlkwcEpTRkJDZVZZNVRGeHVOR0l2VWxwWWFtTTBOMVV3TnpSS2RESTBSMXBoY205eFkweEpkMFZwUWxCeFVHOTNTWEJOVEhwRlpHUmtWVEJYVTBVcldrSlBPSFZMUmtORU1rUlNOMXh1V2xGSlJFRlJRVUpjYmkwdExTMHRSVTVFSUZCVlFreEpReUJMUlZrdExTMHRMVnh1SWl3aWEyVjVVMmxuYm1GMGRYSmxJam9pWlhsS2VtRlhaSFZaV0ZJeFkyMVZhVTlwU25sVmFsWTJTekJ2ZWt4NmJFdFdVemd4WlZaV1IxSkVRbTVWVXpnMFYwVkpNMUZVUmpGVWJrWlBaREZzVkZkRVFqVmtiRTVZVkZaQ1RGWlZjRXBoTUd0NVltcEpOVkp1Y0hWVlJ6azJaVWhrUzAwelJuZGpTRnBEWTBWNE5tUllaRkJsUkVaVFdtMUtkRlpYYUVWalJtc3hZVlpHV0UxcE9WUmFTR2hFWVRCU2FFdDZaM2xaYmtKR1ZFVjRSMk5VU1RCUFJFcG9aVmMxTlZKVlZsRmlWRTB6WkRCYWFrMXRlRVZUUjJ4UFRqRldlR0ZyYUhCUk1ITTFUa1pTTVZwc1duaGlXRnB6VDBSVk5WcDVPVEpXTVd4cFRIcFdTV0V6UWpWYU0wSjFUVlpTYlVzd1NsTmpSWEIyVkRCb2RGRnJjSEJSTWs1V1pEQTFiVTVZUWtsamJVNURUMFpPTlZadFZYSk5SMlJJU3pKV2FscFhSbGxpYkZGMlRWWldUbFl5TlZobFYzaDNVMnRrYlZsWFZuSk9WMngxVW1rNWFXSldUbGhsUlhCV1VYbDBTazFZVFRCTlZGRjNZakJHYjJKc1pERlNha0o0WkRCa1YxSlhPV2xSTTFwRVdteEplV05zV2taVmFrVXhVakZPYVZsNmJFVlZiV2h3WVc1a1ZXRXdTWFpSYkVVelVWaEpkbFJ0T0RGTE1uQjVZMVpyTldGR1JYWk9WMXAwWW0xTk1tUkZWbTFVTUd4eFpETkNiRlpVVW5GT1ZGSlJVM3BHZUZGcmNFcGFiRXBPVVRCT1RsUlZSVGxRVTBselNXMWtjMkl5U21oaVJYUnNaVlZzYTBscWIybFpiVkpzV2xSVk1rNVVXWGRaTWxwcFRrUk9hazlYU1hsUFIwcHRUMVJvYkZsWFRtaGFiVVV5VGtSWmFXWlJQVDBpZlE9PSJ9
+                              status: {}
+                          slug: chriss-test-app-monster
+                  isHelmManaged: false
+                  kotsApplication: |+
+                      apiVersion: kots.io/v1beta1
+                      kind: Application
+                      metadata:
+                        name: sentry-enterprise
+                      spec:
+                        title: Sentry Enterprise
+                        icon: https://sentry-brand.storage.googleapis.com/sentry-glyph-black.png
+                        statusInformers:
+                          - service/sentry
+                          - deployment/sentry-web
+                          - deployment/sentry-worker
+                        ports:
+                          - serviceName: "sentry"
+                            servicePort: 9000
+                            localPort: 9000
+                            applicationUrl: "http://sentry"
+                  minimalRBAC: false
+                  service:
+                      nodePort: 30000
+                      type: NodePort
+                version: 1.104.7-build.1
+              concurrencyLevel: 0
+              repositories:
+              - caFile: ""
+                certFile: ""
+                insecure: false
+                keyfile: ""
+                name: openebs
+                password: ""
+                url: https://openebs.github.io/charts
+                username: ""
+         #api:
+         #  extraArgs:
+         #    service-node-port-range: 80-32767
