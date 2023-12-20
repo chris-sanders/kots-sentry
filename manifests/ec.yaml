@@ -93,7 +93,6 @@ spec:
                       nodePort: 30000
                       type: NodePort
                 version: 1.104.7-build.1
-              concurrencyLevel: 0
               - chartname: jetstack/cert-manager
                 name: cert-manager
                 namespace: cert-manager
@@ -119,6 +118,7 @@ spec:
                 password: ""
                 url: https://charts.jetstack.io
                 username: ""
+              concurrencyLevel: 0
          #api:
          #  extraArgs:
          #    service-node-port-range: 80-32767
